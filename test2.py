@@ -21,23 +21,23 @@ def sboxes():
             boxes.append(box)
     return(boxes)
 def end():
-    ideal=[1,2,3,4,5,6,7,8,9]
+    ideal=set([1,2,3,4,5,6,7,8,9])
     rows=srows()
     columns=scolumns()
     boxes=sboxes()
     for i in range(0,9):
-        if rows[i]!=ideal:
+        if set(rows[i])!=ideal:
             return(False)
-        if columns[i]!=ideal:
+        if set(columns[i])!=ideal:
             return(False)
-        if boxes[i]!=ideal:
+        if set(boxes[i])!=ideal:
             return(False)
     return True
 def dis():
     for i in range(0,9):
         for j in range(0,9):
             var=board[i][j]
-            print(f"| {var if var is not None else " "} ",end="")
+            print(f"| {var if var is not None else ' '} ",end="")
             if (j+1)%3==0 :
                 print("|",end="")
         print()
@@ -74,18 +74,14 @@ def solve():
                             board[i][j]=None
                             continue
                         if solve():
-                            board[i][j]=None
                             return True
-                        return False
-
+                        board[i][j]=None
     else:
         if end():
               print("solved suduko!!!")
               dis()
               return True
-        else:
-             return False
-
+        return False
 
 def empty():
     for i in range(0,9):
@@ -94,18 +90,22 @@ def empty():
                     return i,j
 
 dis()
-n=int(input("enter number of known places"))
-for i in range (n):
-    irow=int(input("Enter the row :  "))
-    icol=int(input("enter the column :"))
-    value=int(input("Enter value : "))
-    board[irow-1][icol-1]=value
+known_cells = [
+    (1, 1, 5), (1, 2, 3), (1, 5, 7),
+    (2, 1, 6), (2, 4, 1), (2, 5, 9), (2, 6, 5),
+    (3, 2, 9), (3, 3, 8), (3, 8, 6),
+    (4, 1, 8), (4, 5, 6), (4, 9, 3),
+    (5, 1, 4), (5, 4, 8), (5, 6, 3), (5, 9, 1),
+    (6, 1, 7), (6, 5, 2), (6, 9, 6),
+    (7, 2, 6), (7, 7, 2), (7, 8, 8),
+    (8, 4, 4), (8, 5, 1)
+]
+
+# Populate the board
+for r, c, val in known_cells:
+    board[r - 1][c - 1] = val
 
 dis()
 print("start solver")
 solve()
 print("solver ended")
-
-
-
-
